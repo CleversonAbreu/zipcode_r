@@ -4,19 +4,19 @@ import api from './src/services/api';
 import { TextInputMask } from 'react-native-masked-text';
 
 export default function App() {
-  const [cep,setCep] = useState('');
+  const [zipcode,setZipcode] = useState('');
   const inputRef = useRef(null);
-  const [cepUser,setCepUser] = useState(null);  
+  const [zipcodeUser,setZipcodeUser] = useState(null);  
 
   async function getZipcode(){
-    if(cep==''){
-      alert('Digite um cep válido')
+    if(zipcode==''){
+      alert('Invalid Zip code')
       return;
     }
 
     try {
-      const response = await api.get('/'+cep+'/json');
-      setCepUser(response.data);
+      const response = await api.get('/'+zipcode+'/json');
+      setZipcodeUser(response.data);
       Keyboard.dismiss();
     } catch (error) {
       console.log(error);
@@ -24,7 +24,7 @@ export default function App() {
   }
 
   function clear(){
-    setCep('')
+    setZipcode('')
     inputRef.current.focus();
   }
 
@@ -36,22 +36,22 @@ export default function App() {
         placeholder='83601-970'
             style={styles.input}
             type={'zip-code'}
-            value={cep}
-            onChangeText={(text)=>setCep(text)}          
+            value={zipcode}
+            onChangeText={(text)=>setZipcode(text)}          
         />
       </View>
       <View style={styles.areaBtn}>
         <TouchableOpacity style={[styles.btn,{backgroundColor: '#FF9900'}]}onPress={getZipcode}>
-          <Text style={styles.btnText}>Consultar</Text>
+          <Text style={styles.btnText}>Search</Text>
         </TouchableOpacity>
       </View>
       
-      { cepUser &&
+      { !zipcodeUser.erro &&
             <View style={styles.result}>
-            <Text style={styles.itemText}>ENDEREÇO:</Text>
-            <Text style={styles.itemText}>{cepUser.logradouro}</Text>
-            <Text style={styles.itemText}>{cepUser.bairro}</Text>
-            <Text style={styles.itemText}>{cepUser.localidade}/{cepUser.uf}</Text>
+            <Text style={styles.itemText}>Address:</Text>
+            <Text style={styles.itemText}>{zipcodeUser.logradouro}</Text>
+            <Text style={styles.itemText}>{zipcodeUser.bairro}</Text>
+            <Text style={styles.itemText}>{zipcodeUser.localidade}/{zipcodeUser.uf}</Text>
           </View>
       }     
     </SafeAreaView>
